@@ -1,355 +1,193 @@
-var KeyLayout = [
-    [
-      "Esc",
-      {
-        "x": 1
-      },
-      "F1",
-      "F2",
-      "F3",
-      "F4",
-      {
-        "x": 0.5
-      },
-      "F5",
-      "F6",
-      "F7",
-      "F8",
-      {
-        "x": 0.5
-      },
-      "F9",
-      "F10",
-      "F11",
-      "F12",
-      {
-        "x": 0.25
-      },
-      "PrtSc",
-      "Scroll Lock",
-      "Pause\nBreak"
-    ],
-    [
-      {
-        "y": 0.5
-      },
-      "~\n`",
-      "!\n1",
-      "@\n2",
-      "#\n3",
-      "$\n4",
-      "%\n5",
-      "^\n6",
-      "&\n7",
-      "*\n8",
-      "(\n9",
-      ")\n0",
-      "_\n-",
-      "+\n=",
-      {
-        "w": 2
-      },
-      "Backspace",
-      {
-        "x": 0.25
-      },
-      "Insert",
-      "Home",
-      "PgUp",
-      {
-        "x": 0.25
-      },
-      "Num Lock",
-      "/",
-      "*",
-      "-"
-    ],
-    [
-      {
-        "w": 1.5
-      },
-      "Tab",
-      "Q",
-      "W",
-      "E",
-      "R",
-      "T",
-      "Y",
-      "U",
-      "I",
-      "O",
-      "P",
-      "{\n[",
-      "}\n]",
-      {
-        "w": 1.5
-      },
-      "|\n\\",
-      {
-        "x": 0.25
-      },
-      "Delete",
-      "End",
-      "PgDn",
-      {
-        "x": 0.25
-      },
-      "7\nHome",
-      "8\n↑",
-      "9\nPgUp",
-      {
-        "h": 2
-      },
-      "+"
-    ],
-    [
-      {
-        "w": 1.75
-      },
-      "Caps Lock",
-      "A",
-      "S",
-      "D",
-      "F",
-      "G",
-      "H",
-      "J",
-      "K",
-      "L",
-      ":\n;",
-      "\"\n'",
-      {
-        "w": 2.25
-      },
-      "Enter",
-      {
-        "x": 3.5
-      },
-      "4\n←",
-      "5",
-      "6\n→"
-    ],
-    [
-      {
-        "w": 2.25
-      },
-      "Shift",
-      "Z",
-      "X",
-      "C",
-      "V",
-      "B",
-      "N",
-      "M",
-      "<\n,",
-      ">\n.",
-      "?\n/",
-      {
-        "w": 2.75
-      },
-      "Shift",
-      {
-        "x": 1.25
-      },
-      "↑",
-      {
-        "x": 1.25
-      },
-      "1\nEnd",
-      "2\n↓",
-      "3\nPgDn",
-      {
-        "h": 2
-      },
-      "Enter"
-    ],
-    [
-      {
-        "w": 1.25
-      },
-      "Ctrl",
-      {
-        "w": 1.25
-      },
-      "Win",
-      {
-        "w": 1.25
-      },
-      "Alt",
-      {
-        "a": 7,
-        "w": 6.25
-      },
-      "",
-      {
-        "a": 4,
-        "w": 1.25
-      },
-      "Alt",
-      {
-        "w": 1.25
-      },
-      "Win",
-      {
-        "w": 1.25
-      },
-      "Menu",
-      {
-        "w": 1.25
-      },
-      "Ctrl",
-      {
-        "x": 0.25
-      },
-      "←",
-      "↓",
-      "→",
-      {
-        "x": 0.25,
-        "w": 2
-      },
-      "0\nIns",
-      ".\nDel"
-    ]
-  ];
+const KeyBoard = function(){
+  var properties = {
+    key: {
+      size: 60,
+      textSize: 40
+    }
+  };
 
-const KeyBoard = {
-    properties:{
-        key:{
-            size: 60,
-            offset: 10,
-            textSize: 40
-        }
-    },
-    initialize: function(){
-        let x = 0;
-        let y = 0;
-        let w = 1;
-        let h = 1;
+  var keyboardContainer = null;
+  var keyBoardLayout = null;
+  var maxCountOfKeyOnRow_Index = 0;
 
-        let offsetX = 10, offsetY = 10;
-        let oldPosX = 0, oldPosY = 0;
+  var keyBoardSize = {
+    w: 0,
+    h: 0,
+  }
 
-        let keySize = this.properties.key.size + this.properties.key.offset;
-        let rawKeySize = this.properties.key.size;
-        let rawKeyTextSize = this.properties.key.textSize;
+  //render all keys by defined layout
+  var renderKeys = function(){
+    let oldPosY = 0;
 
-        for(let [index,rows] of KeyLayout.entries()){
-            let posX = 0, posY = 0;
-            let width = 0, height = 0;
-            let tbWidth = 0, tbHeight = 0;
+    for(let [index,rows] of keyBoardLayout.entries()){ 
+        let oldKey = null;     
+        let x = 0, y = 0, w = 1, h = 1;
+        let offset = {x: 10, y: 10};
 
-            //because the array includes objects
-            //using idx from array entries will cause missing idx which is needed 
-            //to calculate pos X
-            let idx = 0;
-            for(let ele of rows){
-                if(typeof ele === 'string'){
-                    //create DOM element
-                    let DOMelement = $(
-                        `
-                    <div class="key bold-border sm-shadow" type="button" data-key-name="${ele}">
-                        <span class="text">${ele}</span>
+        //declare postion and size of the key
+        let pos = {x: 0, y : 0};
+        let size = {w: 0, h: 0};
+        let tbSize = {w: 0, h: 0};
 
-                        <div class="angle-shadow left-border-arrow"></div>
-                        <div class="angle-shadow top-border-arrow"></div>
-                        <div class="angle-shadow right-border-arrow"></div>
-                        <div class="angle-shadow bottom-border-arrow"></div>
-                    </div>
+        for(let ele of rows){
+            if(typeof ele === 'string'){
+                //create DOM element
+                let DOMelement = $(
                     `
-                    );
-                    
-                    //if there is the first row
-                    //then we set the first key to offset position
-                    //every keys after the first key will folow the first key's position
-                    
-                    //check whether it is the first row
-                    if(index == 0){
-                        posY = offsetY;
-                    }else{
-                        posY = oldPosY + keySize + (keySize * y);
-                    }
+                <div class="key bold-border sm-shadow" type="button" data-key-name="${ele}">
+                    <span class="text">${ele}</span>
 
-                    //check whether it is the first key
-                    if(idx == 0){
-                        posX = offsetX;
-                    }else{
-                        posX = oldPosX + keySize + (keySize * x); 
-                    }
+                    <div class="angle-shadow left-border-arrow"></div>
+                    <div class="angle-shadow top-border-arrow"></div>
+                    <div class="angle-shadow right-border-arrow"></div>
+                    <div class="angle-shadow bottom-border-arrow"></div>
+                </div>
+                `
+                );
 
-                    //remember the old position
-                    //to calculate the next key position
-                    oldPosX = posX;
+                //calculate the size of the key
+                size.w = properties.key.size * w;
+                size.h = properties.key.size * h;
 
-                    //set position for the key
-                    $(DOMelement).css("top", posY + "px");
-                    $(DOMelement).css("left", posX + "px");
-                    
-                    //calculate the size of the key
-                    width = rawKeySize * w;
-                    height = rawKeySize * h;
+                //calculate the size of the textbox inside the key
+                tbSize.w = (properties.key.textSize / properties.key.size) * size.w;
+                tbSize.h = (properties.key.textSize / properties.key.size) * size.h;
 
-                    //set size for the key
-                    $(DOMelement).css("width", width + "px");
-                    $(DOMelement).css("height", height + "px");
-                    
-                    //calculate the size of the textbox inside the key
-                    tbWidth = (rawKeyTextSize / rawKeySize) * width;
-                    tbHeight = (rawKeyTextSize / rawKeySize) * height;
-
-                    //set the size for the textbox
-                    $(DOMelement).find(".text").css("width", tbWidth + "px");
-                    $(DOMelement).find('.text').css('height', tbHeight + 'px');
-
-                    //set the size for borders
-                    $(DOMelement).find('.angle-shadow.left-border-arrow').css('border-left-width', (width / 2) + 'px');
-                    $(DOMelement).find('.angle-shadow.top-border-arrow').css('border-top-width', (height / 2) + 'px');
-                    $(DOMelement).find('.angle-shadow.right-border-arrow').css('border-right-width', (width / 2) + 'px');
-                    $(DOMelement).find('.angle-shadow.bottom-border-arrow').css('border-bottom-width', (height / 2) + 'px');
-
-                    if(width != rawKeySize){
-                        console.log(width);
-                        $(DOMelement).find('.angle-shadow.top-border-arrow').css('border-left-width', (27 + (width / 4)) + 'px');
-                        $(DOMelement).find('.angle-shadow.top-border-arrow').css('border-right-width', (27 + (width / 4)) + 'px');
-                        $(DOMelement).find('.angle-shadow.bottom-border-arrow').css('border-left-width', (27 + (width / 4)) + 'px');
-                        $(DOMelement).find('.angle-shadow.bottom-border-arrow').css('border-right-width', (27 + (width / 4)) + 'px');
-                    }
-
-                    if(height != rawKeySize){
-                        $(DOMelement).find('.angle-shadow.left-border-arrow').css('border-top-width', (27 + (height / 2)) + 'px');
-                        $(DOMelement).find('.angle-shadow.left-border-arrow').css('border-bottom-width', (27 + (height / 2)) + 'px');
-                        $(DOMelement).find('.angle-shadow.right-border-arrow').css('border-top-width', (27 + (height / 2)) + 'px');
-                        $(DOMelement).find('.angle-shadow.right-border-arrow').css('border-bottom-width', (27 + (height / 2)) + 'px');
-                    }
-
-                    //append the key to the container
-                    $("#keyboard-main-container").append(DOMelement);
-
-                    //after done a key, reset x
-                    x = 0;
-
-                    w = 1;
-                    h = 1;
-
-                    ++idx;
+                //calculate the position of the key
+                if(oldKey == null){
+                  pos.x = offset.x;
+                }else{
+                  pos.x = oldKey.pos.x + oldKey.size.w + properties.key.size * x;
                 }
 
-                if(typeof ele === 'object'){
-                    if(ele.hasOwnProperty("x")) x = ele['x'];
-                    if(ele.hasOwnProperty("y")) y = ele['y'];
-                    if(ele.hasOwnProperty("w")) w = ele['w'];
-                    if(ele.hasOwnProperty("h")) h = ele['h'];
+                if(index == 0){
+                  pos.y = offset.y;
+                }else{
+                  pos.y = oldPosY + properties.key.size + properties.key.size * y;
                 }
+
+                //calculate the board width
+                if(index == maxCountOfKeyOnRow_Index){
+                  if(oldKey == null){
+                    keyBoardSize.w += size.w + offset.x * 4;
+                  }else{
+                    if(x > 0){
+                      keyBoardSize.w += size.w + properties.key.size * x;
+                    }else{
+                      keyBoardSize.w += size.w;
+                    }
+                  }
+                  
+                }
+
+                oldKey = {
+                  pos: {x: pos.x, y: pos.y},
+                  size: {w: size.w, h: size.h}
+                };
+
+                $(DOMelement).css('top', pos.y + 'px');
+                $(DOMelement).css('left', pos.x + 'px');
+                $(DOMelement).css('width', size.w + 'px');
+                $(DOMelement).css('height', size.h + 'px');
+
+                $(DOMelement).find('.text').css('width', tbSize.w + 'px');
+                $(DOMelement).find('.text').css('height', tbSize.h + 'px');
+
+                //set the size for borders
+                $(DOMelement).find('.angle-shadow.left-border-arrow').css('border-left-width', (size.w / 2) + 'px');
+                $(DOMelement).find('.angle-shadow.top-border-arrow').css('border-top-width', (size.h / 2) + 'px');
+                $(DOMelement).find('.angle-shadow.right-border-arrow').css('border-right-width', (size.w / 2) + 'px');
+                $(DOMelement).find('.angle-shadow.bottom-border-arrow').css('border-bottom-width', (size.h / 2) + 'px');
+
+                if(size.w > properties.key.size){
+                    $(DOMelement).find('.angle-shadow.top-border-arrow').css('border-left-width', ((size.w / 2) - 10) + 'px');
+                    $(DOMelement).find('.angle-shadow.top-border-arrow').css('border-right-width', ((size.w / 2) - 10) + 'px');
+                    $(DOMelement).find('.angle-shadow.bottom-border-arrow').css('border-left-width', ((size.w / 2) - 10) + 'px');
+                    $(DOMelement).find('.angle-shadow.bottom-border-arrow').css('border-right-width', ((size.w / 2) - 10) + 'px');
+                }
+
+                if(size.h > properties.key.size){
+                  $(DOMelement).find('.angle-shadow.left-border-arrow').css('border-top-width', (20 + (size.h / 4)) + 'px');
+                  $(DOMelement).find('.angle-shadow.left-border-arrow').css('border-bottom-width', (20 + (size.h / 4)) + 'px');
+                  $(DOMelement).find('.angle-shadow.right-border-arrow').css('border-top-width', (20 + (size.h / 4)) + 'px');
+                  $(DOMelement).find('.angle-shadow.right-border-arrow').css('border-bottom-width', (20 + (size.h / 4)) + 'px');
+                }
+
+                $(keyboardContainer).append(DOMelement);
+
+                x = 0;
+                w = 1;
+                h = 1;   
             }
 
-            //after done a row, reset y to zero
-            y = 0;
-
-            //remember the old position
-            //to calculate the next key position
-            oldPosY = posY;
-            
-            if(index == 2) break;
+            if(typeof ele === 'object'){
+                if(ele.hasOwnProperty("x")) x = ele['x'];
+                if(ele.hasOwnProperty("y")) y = ele['y'];
+                if(ele.hasOwnProperty("w")) w = ele['w'];
+                if(ele.hasOwnProperty("h")) h = ele['h'];
+            }
+        } 
+        
+        //calculate the board height
+        if(index == 0){
+          keyBoardSize.h += size.h + offset.y * 4;
+        }else{
+          if(y > 0){
+            keyBoardSize.h += size.w + properties.key.size * y;
+          }else{
+            keyBoardSize.h += size.w;
+          }
         }
+
+        y = 0;
+
+        oldPosY = oldKey.pos.y;
     }
-};
+  };
+  
+  var adjustKeyboardContainer = function(){
+    if(keyboardContainer == null){
+      console.error("Keyboard Container is not defined");
+    }else if(keyBoardSize.w == 0 || keyBoardSize.h == 0){   
+      console.error("Keyboard size is zero")
+    }else{
+      $(keyboardContainer).css("width", keyBoardSize.w + "px");
+      $(keyboardContainer).css("height", keyBoardSize.h + "px");
+    }
+  }
+
+  var FindRowInLength = function(){
+    //find the row which have a maxium count of keys
+    var maxCountOfKeyOnRow = 0;
+
+
+    for (const ele of keyBoardLayout[0]) {
+      if(typeof ele === 'string') maxCountOfKeyOnRow++;
+    }
+
+    for (const [idx,row] of keyBoardLayout.entries()) {
+      let currentCount = 0;
+      for (const ele of row) {
+        if(typeof ele === 'string') currentCount++;
+      }
+
+      if(currentCount > maxCountOfKeyOnRow){
+        maxCountOfKeyOnRow = currentCount;
+        maxCountOfKeyOnRow_Index = idx;
+      }
+    }
+  }
+
+  return {
+    initialize: function(_keyboardContainer, keyBoardLayoutJson){
+      keyboardContainer = _keyboardContainer;
+      keyBoardLayout = keyBoardLayoutJson;
+      FindRowInLength();
+      renderKeys();
+      adjustKeyboardContainer();
+    },
+    clear: function(){
+      $(keyboardContainer).empty();
+    }
+  }
+}
