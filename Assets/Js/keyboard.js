@@ -1,4 +1,4 @@
-const KeyBoard = function(){
+const KeyBoard = function(_keyBoardContainer){
   var properties = {
     key: {
       size: 60,
@@ -6,7 +6,7 @@ const KeyBoard = function(){
     }
   };
 
-  var keyboardContainer = null;
+  var keyboardContainer = _keyBoardContainer;
   var keyBoardLayout = null;
   var maxCountOfKeyOnRow_Index = 0;
 
@@ -18,6 +18,7 @@ const KeyBoard = function(){
   //render all keys by defined layout
   var renderKeys = function(){
     let oldPosY = 0;
+    let isKeyBoardHasGap = false;
 
     for(let [index,rows] of keyBoardLayout.entries()){ 
         let oldKey = null;     
@@ -27,7 +28,7 @@ const KeyBoard = function(){
         //declare postion and size of the key
         let pos = {x: 0, y : 0};
         let size = {w: 0, h: 0};
-        let tbSize = {w: 0, h: 0};
+        let tbSize = {w: 0, h: 0};  
 
         for(let ele of rows){
             if(typeof ele === 'string'){
@@ -113,6 +114,11 @@ const KeyBoard = function(){
                   $(DOMelement).find('.angle-shadow.right-border-arrow').css('border-bottom-width', (20 + (size.h / 4)) + 'px');
                 }
 
+                //initialize event
+                $(DOMelement).on('click',function(e){
+                  $(keyboardContainer).trigger('key:clicked',[ele]);
+                });
+
                 $(keyboardContainer).append(DOMelement);
 
                 x = 0;
@@ -122,7 +128,10 @@ const KeyBoard = function(){
 
             if(typeof ele === 'object'){
                 if(ele.hasOwnProperty("x")) x = ele['x'];
-                if(ele.hasOwnProperty("y")) y = ele['y'];
+                if(ele.hasOwnProperty("y")){
+                  y = ele['y'];
+                  isKeyBoardHasGap = true;
+                }
                 if(ele.hasOwnProperty("w")) w = ele['w'];
                 if(ele.hasOwnProperty("h")) h = ele['h'];
             }
@@ -135,7 +144,11 @@ const KeyBoard = function(){
           if(y > 0){
             keyBoardSize.h += size.w + properties.key.size * y;
           }else{
-            keyBoardSize.h += size.w;
+            if(isKeyBoardHasGap){
+              keyBoardSize.h += size.w;
+            }else{
+              keyBoardSize.h += size.h;
+            }
           }
         }
 
@@ -178,9 +191,35 @@ const KeyBoard = function(){
     }
   }
 
+  var isLetter = function(c){
+    let charCode = c.charCodeAt(0);
+    if((charCode >= 48 && charCode <= 90) || (charCode >= 97 && charCode < 123)){
+        return true;
+    }
+
+    return false;
+  }
+
+  var isDigit = function(c){
+    let charCode = c.charCodeAt(0);
+    if((charCode >= 48 && charCode <= 57)){
+      return true;
+    } 
+
+    return false;
+  }
+
+  var isAlphabet = function(c){
+    let charCode = c.charCodeAt(0);
+    if((charCode >= 48 && charCode <= 57) || (charCode >= 65 && charCode <= 90) || (charCode >= 97 && charCode <= 122)){
+      return true;
+    } 
+
+    return false;
+  }
+
   return {
-    initialize: function(_keyboardContainer, keyBoardLayoutJson){
-      keyboardContainer = _keyboardContainer;
+    initialize: function(keyBoardLayoutJson){
       keyBoardLayout = keyBoardLayoutJson;
       FindRowInLength();
       renderKeys();
@@ -188,6 +227,67 @@ const KeyBoard = function(){
     },
     clear: function(){
       $(keyboardContainer).empty();
+      maxCountOfKeyOnRow_Index = 0;
+      keyBoardSize = {
+        w: 0,
+        h: 0,
+      }
+    },
+    getKeyboardContainerIns: function(){
+      return keyboardContainer;
+    },
+    getKeyboardLayoutSingleLetter: function(filter){
+      let characters = [];
+      
+      for(const rows of keyBoardLayout){
+        for(const ele of rows){
+          if(typeof ele === 'string'){
+            if(ele.length == 1){
+              if(filter === 'letter'){
+                if(isLetter(ele)){
+                  characters.push(ele);
+                }
+              }else if(filter === 'digit'){
+                if(isDigit(ele)){
+                  characters.push(ele);
+                }
+              } else if(filter === 'alphabet'){
+                if(isAlphabet(ele)){
+                  characters.push(ele);
+                }
+              }else{
+                characters.push(ele);
+              }
+            } 
+          }
+        }
+      }
+      return characters;
+    },
+    getFullKeyboardLayout: function(){
+      let characters = [];
+      
+      for(const rows of keyBoardLayout){
+        for(const ele of rows){
+          if(typeof ele === 'string'){
+            characters.push(ele);
+          }
+        }
+      }
+      return characters;
+    },
+    hiddenAllKeys: function(){
+      $('.key .text').addClass('hidden');
+    },
+    showAllKeys: function(){
+      $('.key .text').removeClass('hidden');
+    },
+    showKeyHint: function(keyName){
+      keyName = $.escapeSelector(keyName); // prevent special character on keyboard such as . ' # etc
+      var key = $(`.key[data-key-name="${keyName}"] .text`).addClass('hint');
+      setTimeout(function(){
+        $(key).removeClass('hint');
+      },300);
     }
   }
 }

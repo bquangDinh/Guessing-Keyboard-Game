@@ -18,6 +18,33 @@ body *{
     width: 100vw;
     height: 100vh;
     background-color: #EDD3B2;
+    position: relative;
+}
+
+.noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+       -khtml-user-select: none; /* Konqueror HTML */
+         -moz-user-select: none; /* Old versions of Firefox */
+          -ms-user-select: none; /* Internet Explorer/Edge */
+              user-select: none; /* Non-prefixed version, currently
+                                    supported by Chrome, Edge, Opera and Firefox */
+  }
+
+.txt{
+    font-family: FVF_Fernando;
+}
+
+.txt-left{
+    text-align: left;
+}
+
+.txt-right{
+    text-align: right;
+}
+
+.txt-center{
+    text-align: center;
 }
 
 .bold-border{
@@ -40,6 +67,57 @@ body *{
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+#result-panel{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    background-color: rgba(1, 1, 1, 0.8);
+    z-index: 999;
+}
+
+#resullt-panel-inner{
+    position: absolute;
+    top: 25%;
+    left: 25%;
+    right: 25%;
+    bottom: 25%;
+    background-color: #D8CAED;
+    z-index: 9999;
+}
+
+#close-result-panel{
+    width: 40px;
+    height: 40px;
+    float: right;
+    margin-right: 10px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.title-msg, .score-msg{
+    color: #3A3A3A;
+    margin-left: 20px;
+}
+
+.title-msg{
+    font-size: 1.4em;
+}
+
+.score-msg{
+    font-size: 2em;
+}
+
+#special-msg-container{
+    margin-left: 20px;
+}
+
+#special-msg{
+    font-size: 1.5em;
+    color: #3A3A3A;
 }
 
 .game-info-container{
@@ -80,8 +158,13 @@ body *{
     background-color: #E74C3C;
 }
 
+.selecting-mode-container .selecting-mode__inner .selecting-mode-btn.disabled{
+    background-color: #CAEDD1;
+    cursor: not-allowed;
+}
+
 .playing-panel{
-    flex-grow: 3;
+    flex-grow: 2;
 }
 
 .playing-panel .playing-panel__main{
@@ -137,6 +220,63 @@ body *{
     grid-row:  3 / 4;
 }
 
+#letter-time-progressbar{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+#time-counter{
+    position: absolute;
+    right: 30px;
+    top: 10px;
+    color: #EEE9E3;
+    font-size: 1.2em;
+}
+
+#stop-btn{
+    width: 150px;
+    height: 50px;
+    background-color: #E74C3C;
+    color: #EDD3B2;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    border-radius: 5px;
+}
+
+#letter-generator{
+    font-size: 10em;
+    color: #EEE9E3;
+}
+
+.progressbar-outer{
+    width: 100%;
+    height: 20px;
+    background-color: #EEE9E3;
+    position: relative;
+    border-top: 3px solid #3A3A3A;
+}
+
+.progressbar-outer .progressbar-inner{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    border: 1px solid #3A3A3A;
+    border-right: 3px solid #3A3A3A;
+    background-color: #2ECC71;
+}
+
+#playing-panel{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
 .keyboard-select-btn{
     width: 50%;
     height: 50%;
@@ -164,6 +304,7 @@ body *{
     font-family: FVF_Fernando;
     color: #3A3A3A;
     border-radius: 10px;
+    cursor: pointer;
 }
 
 .game-score-container{
@@ -174,6 +315,40 @@ body *{
     width: 93%;
     height: 93%;
     background-color: #EEE9E3;
+    display: flex;
+    flex-direction: column;
+}
+.game-score-container .game-score-container__inner .upper{
+    flex: 1;
+    height: 50%;
+}
+
+.game-score-container .game-score-container__inner .lower{
+    flex: 1;
+}
+
+.game-score-container .game-score-container__inner .title{
+    font-size: 1.2em;
+    color: #3A3A3A;
+    margin-left: 20px;
+}
+
+.game-score-container .game-score-container__inner .score-txt{
+    font-size: 5em;
+    color: #3A3A3A;
+    margin-top: -60px;
+}
+
+@media only screen and (max-width: 1440px){
+    .game-score-container .game-score-container__inner .title{
+        font-size: 13px;
+    }
+
+    
+    .game-score-container .game-score-container__inner .score-txt{
+        font-size: 3em;
+        margin-top: -20px;
+    }
 }
 
 .keyboard-container{
@@ -220,6 +395,15 @@ body *{
     transform: scale(1);
 
     transition: transform .1s;
+}
+
+#keyboard-main-container .key .text.hidden{
+    color: transparent;
+}
+
+#keyboard-main-container .key .text.hint{
+    background-color: #2ECC71;
+    color: #3A3A3A !important;
 }
 
 #keyboard-main-container .key:hover > .text{

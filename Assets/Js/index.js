@@ -1,5 +1,31 @@
-var keyBoard = KeyBoard();
 var keyBoardContainer = $("#keyboard-main-container");
+var rememberedKeysDOM = $("#remembered-keys-count");
+var missedKeysDOM = $("#missed-keys-count");
+var letterDOM = $("#letter-generator");
+
+
+var progressbarDOM = $("#letter-time-progressbar");
+
+var timerDOM = $("#time-counter");
+
+var resultPanelDOM = $("#result-panel");
+var rmScoreTbox = $("#remembered-keys-msg");
+var mScoreTbox = $("#missed-keys-msg");
+var spemsgTbox = $("#special-msg");
+
+var panels = {
+  settings_panel: $("#settings-panel"),
+  playing_panel: $("#playing-panel")
+};
+
+var keyBoard = KeyBoard(keyBoardContainer);
+var scoreBoard = ScoreBoard(rememberedKeysDOM, missedKeysDOM);
+var playingBoard = PlayingBoard(panels);
+var resultBoard = ResultBoard(resultPanelDOM, rmScoreTbox, mScoreTbox, spemsgTbox);
+var charGenerator = CharGenerator(letterDOM, keyBoard);
+var progressBarController = ProgressBar(progressbarDOM, 100);
+var timerController = Timer(timerDOM);
+var gameController = Game(keyBoard, scoreBoard, playingBoard, resultBoard, charGenerator, progressBarController, timerController);
 
 var ANSI104 = [
     [
@@ -183,7 +209,7 @@ var ANSI104 = [
         "a": 7,
         "w": 6.25
       },
-      "",
+      "Space",
       {
         "a": 4,
         "w": 1.25
@@ -316,7 +342,7 @@ var DEFAULT_60 = [
         "a": 7,
         "w": 6.25
       },
-      "",
+      "Space",
       {
         "a": 4,
         "w": 1.25
@@ -401,7 +427,7 @@ var JD40 = [
         "a": 7,
         "w": 6.25
       },
-      "",
+      "Space",
       {
         "a": 4,
         "w": 1.25
@@ -461,7 +487,7 @@ var PLANCK = [
       "Return"
     ],
     [
-      "",
+      "Space",
       "Ctrl",
       "Alt",
       "Super",
@@ -469,7 +495,7 @@ var PLANCK = [
       {
         "w": 2
       },
-      "",
+      "Space",
       "&uArr;",
       "&larr;",
       "&darr;",
@@ -612,5 +638,56 @@ KeyLayoutsMap["PLANCK"] = PLANCK;
 KeyLayoutsMap["LEOPOLD_FC660M"] = LEOPOLD_FC660M;
 
 $(document).ready(function(e){
-    keyBoard.initialize(keyBoardContainer, KeyLayoutsMap["PLANCK"]);
+    //default keyboard
+    keyBoard.initialize(KeyLayoutsMap["ASNI_104"]);
+    scoreBoard.Initialize();
+
+    gameController.Initialize();
+
+    $(".keyboard-select-btn").click(function(e){
+        $('.keyboard-select-btn.selected').removeClass('selected');
+        $(this).addClass('selected');
+
+        //select keyboard from KeyLayoutsMap
+        let keyBoardName = $(this).data('keyboard-name');
+        let keyboardLayout = KeyLayoutsMap[keyBoardName];
+
+        if(keyboardLayout !== 'undefined'){
+            keyBoard.clear();
+            keyBoard.initialize(keyboardLayout);
+        }else{
+            console.error('Selected keyboard is undefined');
+        }
+    });
+
+    $('.selecting-mode-btn').click(function(e){
+      let modename = $(this).data('mode-name');
+      $('.selecting-mode-btn.selected').removeClass('selected');
+      $(this).addClass('selected');
+
+      gameController.SetMode(modename);
+    });
+
+    $("#playing-panel").dblclick(function(e){
+      console.log('Stop');
+    });
+
+    $("#play-btn").click(function(e){
+      $('.selecting-mode-btn').addClass('disabled').prop('disabled',true);
+      gameController.Play();
+    });
+
+    $("#stop-btn").click(function(e){
+      $('.selecting-mode-btn').removeClass('disabled').prop('disabled',false);
+      gameController.Restart();
+    });
+
+    $("#close-result-panel").click(function(e){
+      $("#result-panel").hide();
+    });
+});
+
+$("#letter-generator").flowtype({
+  minFont: 40,
+  maxFont: 50
 });
