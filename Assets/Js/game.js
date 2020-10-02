@@ -6,6 +6,21 @@ const Game = function( _keyboard, _scoreboard, _playingboard, _resultBoard, _cha
     var lastHitKeyIsCorrect = true;
     var alreadyHit = false;
 
+    var animateCSSJquery  = function(element,animationName,callback){
+        $(element).addClass('animate__animated ' + 'animate__' + animationName);
+      
+        function handleAnimationEnd(){
+          $(element).removeClass('animate__animated');
+          $(element).removeClass('animate__' + animationName);
+          $(element).unbind('animationend');
+      
+          if(typeof callback === 'function') callback();
+        }
+      
+        $(element).bind('animationend',handleAnimationEnd);
+    } // just left it here for a while
+
+
     return {
         Initialize: function(){
             _timer.SetTime(time);
@@ -42,9 +57,11 @@ const Game = function( _keyboard, _scoreboard, _playingboard, _resultBoard, _cha
                 if(keyname.normalize() == c.normalize()){
                     _scoreboard.IncreRememberedKeys();
                     lastHitKeyIsCorrect = true;
+                    animateCSSJquery(_scoreboard.GetRememberedKeyDOM(), 'rubberBand');
                 }else{
                     _scoreboard.IncreMissedKeys();
                     lastHitKeyIsCorrect = false;
+                    animateCSSJquery(_scoreboard.GetMissedKeyDOM(), 'shakeX');
                 }
             });
 
@@ -107,6 +124,7 @@ const Game = function( _keyboard, _scoreboard, _playingboard, _resultBoard, _cha
             _progressbar.Reset();
             _playingboard.goSettingsPanel();
             _keyboard.showAllKeys();
+            _scoreboard.Reset();
         },
         SetMode: function(mode){
             selectedMode = mode;

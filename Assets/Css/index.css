@@ -450,6 +450,17 @@ body *{
     bottom: 0;
 }
 
+#author-container{
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+}
+
+#author{
+    color: #3A3A3A;
+}
+
 /*CSS Keyboard Layout*/
 
 /*-------------------*/
