@@ -46,6 +46,7 @@ const Game = function( _keyboard, _scoreboard, _playingboard, _resultBoard, _cha
 
                 if(alreadyHit == false){
                     _scoreboard.IncreMissedKeys();
+                    animateCSSJquery(_scoreboard.GetMissedKeyDOM(), 'shakeX');
                 }
 
                 //reset the alreadyHit for the next time
@@ -55,12 +56,10 @@ const Game = function( _keyboard, _scoreboard, _playingboard, _resultBoard, _cha
             $(_keyboard.getKeyboardContainerIns()).on('key:clicked', function(e, keyname){
                 alreadyHit = true;
                 if(keyname.normalize() == c.normalize()){
-                    
                     animateCSSJquery(_scoreboard.GetRememberedKeyDOM(), 'rubberBand');
                     _scoreboard.IncreRememberedKeys();
                     lastHitKeyIsCorrect = true;
                 }else{
-                    console.log('sdasdas');
                     _scoreboard.IncreMissedKeys();
                     lastHitKeyIsCorrect = false;
                     animateCSSJquery(_scoreboard.GetMissedKeyDOM(), 'shakeX');

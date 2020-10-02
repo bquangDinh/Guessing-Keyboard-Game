@@ -3,7 +3,6 @@ var rememberedKeysDOM = $("#remembered-keys-count");
 var missedKeysDOM = $("#missed-keys-count");
 var letterDOM = $("#letter-generator");
 
-
 var progressbarDOM = $("#letter-time-progressbar");
 
 var timerDOM = $("#time-counter");
