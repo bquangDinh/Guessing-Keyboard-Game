@@ -7,6 +7,7 @@ const Game = function( _keyboard, _scoreboard, _playingboard, _resultBoard, _cha
     var alreadyHit = false;
 
     var animateCSSJquery  = function(element,animationName,callback){
+        console.log('v');
         $(element).addClass('animate__animated ' + 'animate__' + animationName);
       
         function handleAnimationEnd(){
@@ -19,7 +20,6 @@ const Game = function( _keyboard, _scoreboard, _playingboard, _resultBoard, _cha
       
         $(element).bind('animationend',handleAnimationEnd);
     } // just left it here for a while
-
 
     return {
         Initialize: function(){
@@ -55,10 +55,12 @@ const Game = function( _keyboard, _scoreboard, _playingboard, _resultBoard, _cha
             $(_keyboard.getKeyboardContainerIns()).on('key:clicked', function(e, keyname){
                 alreadyHit = true;
                 if(keyname.normalize() == c.normalize()){
+                    
+                    animateCSSJquery(_scoreboard.GetRememberedKeyDOM(), 'rubberBand');
                     _scoreboard.IncreRememberedKeys();
                     lastHitKeyIsCorrect = true;
-                    animateCSSJquery(_scoreboard.GetRememberedKeyDOM(), 'rubberBand');
                 }else{
+                    console.log('sdasdas');
                     _scoreboard.IncreMissedKeys();
                     lastHitKeyIsCorrect = false;
                     animateCSSJquery(_scoreboard.GetMissedKeyDOM(), 'shakeX');
@@ -134,8 +136,6 @@ const Game = function( _keyboard, _scoreboard, _playingboard, _resultBoard, _cha
             if(selectedMode === 'really') loadTime = 500;
 
             _progressbar.Initialize(loadTime);
-
-            console.log(loadTime);
         }
     }
 }

@@ -1,23 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=1366, initial-scale=1, maximum-scale=1">
-    <title>Visual Keyboard Game</title>
-    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
-    <meta name="description" content="Guessing Keyboard Game">
-    <meta name="author" content="Quang Dinh Bui">
-    <meta property="og:url"                content="" />
-    <meta property="og:type"               content="game, media, entertainment" />
-    <meta property="og:title"              content="Guessking Keyboard Game" />
-    <meta property="og:description"        content="Guessing Keyboard Game" />
-    <meta property="og:image"              content="" />
-    <meta content="utf-8" http-equiv="encoding">
-    <link rel="stylesheet" href="Assets/Css/index.css">
-    <link rel="stylesheet" href="Assets/Css/Libs/animate.min.css">
-</head>
-<body>
-    <div class="wrapper">
+@extends('retro.layouts.retro_main_layout')
+
+@section('meta')
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1366, initial-scale=1, maximum-scale=1">
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<meta name="description" content="Guessing Keyboard Game">
+<meta name="author" content="Quang Dinh Bui">
+<meta property="og:url"                content="" />
+<meta property="og:type"               content="game, media, entertainment" />
+<meta property="og:title"              content="Guessking Keyboard Game" />
+<meta property="og:description"        content="Guessing Keyboard Game" />
+<meta property="og:image"              content="" />
+<meta content="utf-8" http-equiv="encoding">
+@endsection
+
+@section('title')
+Visual Keyboard Game
+@endsection
+
+@section('css')
+<link rel="stylesheet" href="{{ URL::asset('experiments/782fe2c8-4c23-4caa-8015-1e590f85ad0e/Assets/Css/index.css') }}">
+<link rel="stylesheet" href="{{ URL::asset('experiments/782fe2c8-4c23-4caa-8015-1e590f85ad0e/Assets/Css/Libs/animate.min.css') }}">
+@endsection
+
+@section('main-content')
+<div style="margin-top: 60px"></div>
+<div class="wrapper">
         <div id="author-container" class="txt center-container">
             <div id="author">
                 Developed by Quang Dinh Bui. Visis <a href="https://github.com/bquangDinh/Guessing-Keyboard-Game.git" target="_blank">my github</a>
@@ -114,16 +122,18 @@
             </div>
         </div>
     </div>
-    <script src="Assets/Js/jquery-3.5.1.min.js"></script>
-    <script src="Assets/Js/keyboard.js"></script>
-    <script src="Assets/Js/scoreboard.js"></script>
-    <script src="Assets/Js/playingboard.js"></script>
-    <script src="Assets/Js/resultboard.js"></script>
-    <script src="Assets/Js/chargenerator.js"></script>
-    <script src="Assets/Js/progressbar.js"></script>
-    <script src="Assets/Js/timer.js"></script>
-    <script src="Assets/Js/game.js"></script>
-    <script src="Assets/Js/Libs/flowtype.js"></script>
-    <script src="Assets/Js/index.js"></script>
-</body>
-</html>
+@endsection
+
+@section('js')
+<script src="{{ URL::asset('experiments/782fe2c8-4c23-4caa-8015-1e590f85ad0e/Assets/Js/jquery-3.5.1.min.js') }}"></script>
+<script src="{{ URL::asset('experiments/782fe2c8-4c23-4caa-8015-1e590f85ad0e/Assets/Js/keyboard.js') }}"></script>
+<script src="{{ URL::asset('experiments/782fe2c8-4c23-4caa-8015-1e590f85ad0e/Assets/Js/scoreboard.js') }}"></script>
+<script src="{{ URL::asset('experiments/782fe2c8-4c23-4caa-8015-1e590f85ad0e/Assets/Js/playingboard.js') }}"></script>
+<script src="{{ URL::asset('experiments/782fe2c8-4c23-4caa-8015-1e590f85ad0e/Assets/Js/resultboard.js') }}"></script>
+<script src="{{ URL::asset('experiments/782fe2c8-4c23-4caa-8015-1e590f85ad0e/Assets/Js/chargenerator.js') }}"></script>
+<script src="{{ URL::asset('experiments/782fe2c8-4c23-4caa-8015-1e590f85ad0e/Assets/Js/progressbar.js') }}"></script>
+<script src="{{ URL::asset('experiments/782fe2c8-4c23-4caa-8015-1e590f85ad0e/Assets/Js/timer.js') }}"></script>
+<script src="{{ URL::asset('experiments/782fe2c8-4c23-4caa-8015-1e590f85ad0e/Assets/Js/game.js') }}"></script>
+<script src="{{ URL::asset('experiments/782fe2c8-4c23-4caa-8015-1e590f85ad0e/Assets/Js/Libs/flowtype.js') }}"></script>
+<script src="{{ URL::asset('experiments/782fe2c8-4c23-4caa-8015-1e590f85ad0e/Assets/Js/index.js') }}"></script>
+@endsection
